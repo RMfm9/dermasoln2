@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
+import { Button } from 'primereact/button';
 
 const Login = () => {
   const { setAuth } = useAuth();
@@ -25,12 +28,19 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
+  <div className="p-fluid p-formgrid grid">
+    <div className="field col-12">
+      <label htmlFor="email">Email</label>
+      <InputText id="email" value={email} onChange={e => setEmail(e.target.value)} />
     </div>
+    <div className="field col-12">
+      <label htmlFor="password">Password</label>
+      <Password id="password" value={password} onChange={e => setPassword(e.target.value)} toggleMask />
+    </div>
+    <div className="col-12">
+      <Button label="Login" icon="pi pi-sign-in" onClick={handleLogin} />
+    </div>
+  </div>
   );
 };
 

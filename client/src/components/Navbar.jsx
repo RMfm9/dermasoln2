@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { Menubar } from 'primereact/menubar';
+import { Button } from 'primereact/button';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -11,26 +13,33 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const items = [
+    { label: 'Home', icon: 'pi pi-home', command: () => navigate('/') },
+    ...(!user ? [
+      { label: 'Login', icon: 'pi pi-sign-in', command: () => navigate('/login') },
+      { label: 'Register', icon: 'pi pi-user-plus', command: () => navigate('/register') },
+    ] : [
+      ...(user.role === 'user' ? [
+        { label: 'Cart', icon: 'pi pi-shopping-cart', command: () => navigate('/cart') },
+        { label: 'Checkout', icon: 'pi pi-credit-card', command: () => navigate('/checkout') },
+        { label: 'My Orders', icon: 'pi pi-list', command: () => navigate('/my-orders') },
+      ] : []),
+      ...(user.role === 'admin' ? [
+        { label: 'Admin Dashboard', icon: 'pi pi-cog', command: () => navigate('/admin') },
+      ] : []),
+      {
+        label: 'Logout', icon: 'pi pi-sign-out', command: goLogout
+      }
+    ])
+  ];
+
+  const start = <img alt="logo" src="/logo.png" height="40" className="mr-2" />;
+  const end = user ? <span style={{ marginRight: '1rem' }}>Hi, {user.name}</span> : null;
+
   return (
-    <nav>
-      <Link to="/">Home</Link>
-      {!user ? (
-        <>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-        </>
-      ) : (
-        <>
-          {user.role === 'user' && <>
-            <Link to="/cart">Cart</Link>
-            <Link to="/checkout">Checkout</Link>
-            <Link to="/my-orders">My Orders</Link>
-          </>}
-          {user.role === 'admin' && <Link to="/admin">Admin</Link>}
-          <button onClick={goLogout}>Logout</button>
-        </>
-      )}
-    </nav>
+    <div className="card">
+      <Menubar model={items} start={start} end={end} style={{ background: '#d6f5d6', border: 'none' }} />
+    </div>
   );
 };
 

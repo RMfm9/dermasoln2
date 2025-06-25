@@ -3,6 +3,12 @@ import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import { Button } from 'primereact/button';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Card } from 'primereact/card';
+import { Divider } from 'primereact/divider';
+import { Message } from 'primereact/message';
+
 const Checkout = () => {
   const { cartItems, clearCart, updateQty } = useCart();
   const [shippingAddress, setShippingAddress] = useState('');
@@ -11,7 +17,6 @@ const Checkout = () => {
   const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const placeOrder = async () => {
-    // Quantity Validation
     for (let item of cartItems) {
       if (item.quantity > item.stock) {
         return alert(`Stock insufficient for "${item.name}". Only ${item.stock} available.`);
@@ -33,56 +38,68 @@ const Checkout = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      alert('Order placed!');
+      alert('✅ Order placed successfully!');
       clearCart();
       navigate('/my-orders');
     } catch (err) {
       console.error(err);
-      alert('Order failed');
+      alert('❌ Order failed');
     }
   };
 
   return (
-    <div>
-      <h2>Checkout</h2>
+    <div className="p-4">
+      <h2 className="text-green-700 mb-4">Checkout</h2>
 
       {cartItems.length === 0 ? (
-        <p>No items in cart</p>
+        <Message severity="info" text="Your cart is empty" />
       ) : (
         <>
-          {cartItems.map(item => (
-            <div key={item._id} style={{ borderBottom: '1px solid #ccc', padding: '10px' }}>
-              <p><strong>{item.name}</strong></p>
-              <p>Price: ₹{item.price}</p>
-              <p>Stock: {item.stock}</p>
-              <div>
-                <button
+          {cartItems.map((item) => (
+            <Card key={item._id} title={item.name} className="mb-3">
+              <p><strong>Price:</strong> ₹{item.price}</p>
+              <p><strong>Stock:</strong> {item.stock}</p>
+
+              <div className="flex align-items-center gap-2 mt-2">
+                <Button
+                  icon="pi pi-minus"
+                  className="p-button-rounded p-button-sm p-button-secondary"
                   onClick={() => updateQty(item._id, item.quantity - 1)}
                   disabled={item.quantity <= 1}
-                >−</button>
-
-                <span style={{ margin: '0 10px' }}>{item.quantity}</span>
-
-                <button
+                />
+                <span>{item.quantity}</span>
+                <Button
+                  icon="pi pi-plus"
+                  className="p-button-rounded p-button-sm p-button-success"
                   onClick={() => updateQty(item._id, item.quantity + 1)}
                   disabled={item.quantity >= item.stock}
-                >+</button>
+                />
               </div>
-              <p>Subtotal: ₹{item.price * item.quantity}</p>
-            </div>
+
+              <p className="mt-2"><strong>Subtotal:</strong> ₹{item.price * item.quantity}</p>
+            </Card>
           ))}
+
+          <Divider />
 
           <p><strong>Total Amount:</strong> ₹{totalAmount}</p>
 
-          <textarea
-            value={shippingAddress}
-            onChange={(e) => setShippingAddress(e.target.value)}
-            placeholder="Enter your shipping address"
-            rows="4"
-            cols="40"
-          />
-          <br />
-          <button onClick={placeOrder}>Place Order</button>
+          <div className="mt-3">
+            <label htmlFor="address" className="block mb-2">Shipping Address:</label>
+            <InputTextarea
+              id="address"
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
+              rows={4}
+              cols={50}
+              placeholder="Enter full delivery address"
+            />
+          </div>
+
+          <div className="mt-4 flex gap-3">
+            <Button label="Place Order" icon="pi pi-check" className="p-button-success" onClick={placeOrder} />
+            <Button label="Clear Cart" icon="pi pi-times" className="p-button-danger" onClick={clearCart} />
+          </div>
         </>
       )}
     </div>

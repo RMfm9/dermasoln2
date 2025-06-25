@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'primereact/button';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -55,7 +56,8 @@ const Home = () => {
           <div key={product._id} style={{ border: "1px solid #ccc", padding: 10, marginBottom: 10 }}>
             <h4>{product.name}</h4>
             <p>₹{product.price}</p>
-            <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
+            <Button label="Add to cart" icon="pi pi-plus" onClick={() => handleAddToCart(product)} />
+
           </div>
         ))
       )}
