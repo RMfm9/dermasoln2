@@ -33,11 +33,12 @@ const MyOrders = () => {
   }, []);
 
   const handleCancelRequest = async (orderId) => {
+    const API = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem('token');
     try {
-      await axios.put(`http://localhost:5000/api/orders/${orderId}/cancel-request`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.put(`${API}/api/orders/${orderId}/cancel-request`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
       toast.current.show({ severity: 'info', summary: 'Requested', detail: 'Cancellation sent' });
       fetchOrders();
     } catch (err) {

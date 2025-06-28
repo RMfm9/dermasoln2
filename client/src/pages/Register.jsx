@@ -19,7 +19,7 @@ const Register = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/auth/register', form);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, form);
       toast.current.show({ severity: 'success', summary: 'Registered', detail: 'Registration successful', life: 2000 });
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {

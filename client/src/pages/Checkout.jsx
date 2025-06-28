@@ -24,13 +24,14 @@ const Checkout = () => {
     }
 
     try {
+      const API = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem('token');
       const items = cartItems.map(item => ({
         productId: item._id,
         quantity: item.quantity
       }));
 
-      await axios.post('http://localhost:5000/api/orders', {
+      await axios.post(`${API}/api/products`, {
         items,
         totalAmount,
         shippingAddress

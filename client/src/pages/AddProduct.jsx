@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 
 const AddProduct = () => {
-  const [form, setForm] = useState({ name: '', price: null });
+  const [form, setForm] = useState({ name: '', price: null, stock: null });
   const toast = useRef(null);
 
   const handleAdd = async () => {
@@ -16,16 +16,22 @@ const AddProduct = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.current.show({ severity: 'success', summary: 'Success', detail: 'Product added!' });
-      setForm({ name: '', price: null });
+      setForm({ name: '', price: null, stock: null });
     } catch (err) {
-      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to add product' });
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.response?.data?.msg || 'Failed to add product'
+      });
     }
   };
 
+  const isDisabled = !form.name || !form.price || !form.stock;
+
   return (
-    <div className="p-m-4">
+    <div className="p-4 surface-0 border-round shadow-1" style={{ maxWidth: 500, margin: '2rem auto' }}>
       <Toast ref={toast} />
-      <h2 className="text-green-600">Add Product</h2>
+      <h2 className="text-green-600 mb-4">Add Product</h2>
 
       <div className="field mb-3">
         <label htmlFor="name" className="block mb-2">Product Name</label>
@@ -51,7 +57,25 @@ const AddProduct = () => {
         />
       </div>
 
-      <Button label="Add Product" icon="pi pi-plus" onClick={handleAdd} className="p-button-success" />
+      <div className="field mb-4">
+        <label htmlFor="stock" className="block mb-2">Stock Count</label>
+        <InputNumber
+          id="stock"
+          value={form.stock}
+          onValueChange={(e) => setForm({ ...form, stock: e.value })}
+          showButtons
+          min={1}
+          className="w-full"
+        />
+      </div>
+
+      <Button
+        label="Add Product"
+        icon="pi pi-check"
+        className="p-button-success w-full"
+        onClick={handleAdd}
+        disabled={isDisabled}
+      />
     </div>
   );
 };

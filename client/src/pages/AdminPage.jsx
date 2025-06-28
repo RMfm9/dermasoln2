@@ -21,6 +21,9 @@ const AdminPage = () => {
 
   const toast = useRef(null);
   const token = localStorage.getItem('token');
+  const API = import.meta.env.VITE_API_URL;
+
+
 
   useEffect(() => {
     fetchProducts();
@@ -28,7 +31,7 @@ const AdminPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/products');
+      const res = await axios.get(`${API}/api/products`);
       setProducts(res.data);
     } catch (err) {
       console.error('❌ Error fetching products:', err.message);
