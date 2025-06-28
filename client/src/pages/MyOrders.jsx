@@ -11,7 +11,7 @@ const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const toast = useRef(null);
-
+  const API = import.meta.env.VITE_API_URL;
   const fetchOrders = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -33,7 +33,6 @@ const MyOrders = () => {
   }, []);
 
   const handleCancelRequest = async (orderId) => {
-    const API = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem('token');
     try {
       await axios.put(`${API}/api/orders/${orderId}/cancel-request`, {}, {

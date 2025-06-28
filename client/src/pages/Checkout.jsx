@@ -13,7 +13,7 @@ const Checkout = () => {
   const { cartItems, clearCart, updateQty } = useCart();
   const [shippingAddress, setShippingAddress] = useState('');
   const navigate = useNavigate();
-
+  const API = import.meta.env.VITE_API_URL;
   const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const placeOrder = async () => {
@@ -24,7 +24,6 @@ const Checkout = () => {
     }
 
     try {
-      const API = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem('token');
       const items = cartItems.map(item => ({
         productId: item._id,

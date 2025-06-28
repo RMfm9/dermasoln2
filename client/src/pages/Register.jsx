@@ -10,7 +10,7 @@ const Register = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
   const navigate = useNavigate();
   const toast = useRef(null);
-
+  const API = import.meta.env.VITE_API_URL;
   const handleRegister = async () => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/;
     if (!emailRegex.test(form.email)) {
@@ -19,7 +19,7 @@ const Register = () => {
     }
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, form);
+      await axios.post(`${API}/api/auth/register`, form);
       toast.current.show({ severity: 'success', summary: 'Registered', detail: 'Registration successful', life: 2000 });
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {

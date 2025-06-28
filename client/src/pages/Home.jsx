@@ -10,11 +10,11 @@ const Home = () => {
   const { addToCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-
+  const API = import.meta.env.VITE_API_URL;
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`, {
+        const res = await axios.get(`${API}/api/products`, {
           withCredentials: true,
         });
 
