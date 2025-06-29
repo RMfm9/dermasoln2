@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Vitamin D Brightening Cream",
+    "description": "Evens skin tone and boosts radiance.",
+    "price": 899,
+    "image": "https://via.placeholder.com/150",
+    "category": "moisturizer",
+    "brand": "Minimalist",
+    "countInStock": 20,
+    "stock": 3
+  },
+  {
+    "name": "HydraBoost Hyaluronic Serum",
+    "description": "Deep hydration for plump and glowing skin.",
+    "price": 1199,
+    "image": "https://via.placeholder.com/150",
+    "category": "serum",
+    "brand": "Dot & Key",
+    "countInStock": 30,
+    "stock": 12
+  },
+  {
+    "name": "Glow Sunscreen SPF 50",
+    "description": "Lightweight daily protection from UV rays.",
+    "price": 599,
+    "image": "https://via.placeholder.com/150",
+    "category": "sunscreen",
+    "brand": "Aqualogica",
+    "countInStock": 50,
+    "stock": 22
+  },
+  {
+    "name": "Tea Tree Acne Face Wash",
+    "description": "Fights acne and refreshes oily skin.",
+    "price": 349,
+    "image": "https://via.placeholder.com/150",
+    "category": "cleanser",
+    "brand": "Mamaearth",
+    "countInStock": 40,
+    "stock": 15
+  },
+  {
+    "name": "Niacinamide 10% Serum",
+    "description": "Brightens skin and controls oil.",
+    "price": 699,
+    "image": "https://via.placeholder.com/150",
+    "category": "serum",
+    "brand": "The Ordinary",
+    "countInStock": 35,
+    "stock": 10
+  },
+  {
+    "name": "Vitamin C Day Cream",
+    "description": "Reduces pigmentation and boosts glow.",
+    "price": 799,
+    "image": "https://via.placeholder.com/150",
+    "category": "moisturizer",
+    "brand": "Plum",
+    "countInStock": 25,
+    "stock": 6
+  },
+  {
+    "name": "Gentle Micellar Water",
+    "description": "Removes makeup and cleanses without drying.",
+    "price": 449,
+    "image": "https://via.placeholder.com/150",
+    "category": "cleanser",
+    "brand": "Bioderma",
+    "countInStock": 20,
+    "stock": 5
+  },
+  {
+    "name": "Ceramide Moisturizer",
+    "description": "Restores skin barrier and deeply nourishes.",
+    "price": 999,
+    "image": "https://via.placeholder.com/150",
+    "category": "moisturizer",
+    "brand": "Dr. Sheth's",
+    "countInStock": 15,
+    "stock": 4
+  },
+  {
+    "name": "Charcoal Detox Mask",
+    "description": "Unclogs pores and purifies skin.",
+    "price": 549,
+    "image": "https://via.placeholder.com/150",
+    "category": "mask",
+    "brand": "WOW Skin Science",
+    "countInStock": 18,
+    "stock": 7
+  },
+  {
+    "name": "Under Eye Gel with Caffeine",
+    "description": "Reduces puffiness and dark circles.",
+    "price": 499,
+    "image": "https://via.placeholder.com/150",
+    "category": "eye care",
+    "brand": "Mamaearth",
+    "countInStock": 22,
+    "stock": 8
+  }
+]

@@ -30,7 +30,7 @@ const Checkout = () => {
         quantity: item.quantity
       }));
 
-      await axios.post(`${API}/api/products`, {
+      await axios.post(`${API}/api/orders/place`, {
         items,
         totalAmount,
         shippingAddress

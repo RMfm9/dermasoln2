@@ -1,10 +1,8 @@
 const Order = require('../models/Order');
-
-//const Order = require('../models/Order');
-
-const Product = require('../models/Product'); // Make sure you import Product
+const Product = require('../models/Product');
 // const { sendLowStockEmail } = require('../utils/mailer'); // Optional email alerts
 
+// 📦 Place an order
 exports.placeOrder = async (req, res) => {
   try {
     const { items, totalAmount, shippingAddress } = req.body;
@@ -14,8 +12,8 @@ exports.placeOrder = async (req, res) => {
       return res.status(401).json({ msg: "Unauthorized. Please login again." });
     }
 
-    // ✅ Basic validation
-    if (!items || items.length === 0) {
+    // ✅ Validate order items
+    if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ msg: "No items in order" });
     }
 
@@ -23,25 +21,23 @@ exports.placeOrder = async (req, res) => {
 
     for (const item of items) {
       const product = await Product.findById(item.productId);
-      if (!product) return res.status(404).json({ msg: "Product not found" });
+      if (!product) return res.status(404).json({ msg: `Product not found: ${item.productId}` });
 
       if (product.stock < item.quantity) {
-        return res.status(400).json({ msg: `Not enough stock for ${product.name}` });
+        return res.status(400).json({ msg: `Not enough stock for ${product.name}. Available: ${product.stock}` });
       }
 
-      // ✅ Deduct stock
+      // Deduct stock
       product.stock -= item.quantity;
+      await product.save();
 
       if (product.stock <= 2) {
         console.warn(`⚠️ Low stock for ${product.name}: ${product.stock}`);
-        // Optionally send email alert:
         // await sendLowStockEmail(product.name, product.stock);
       }
 
-      await product.save();
-
       formattedItems.push({
-        product: item.productId,
+        product: product._id,
         quantity: item.quantity
       });
     }
@@ -55,30 +51,30 @@ exports.placeOrder = async (req, res) => {
 
     await newOrder.save();
 
-    console.log("✅ Order saved successfully");
-    console.log("📦 Items:", items);
-    console.log("📍 Shipping Address:", shippingAddress);
-    console.log("💰 Total Amount:", totalAmount);
-    console.log("👤 User ID:", req.user._id);
+    console.log("✅ Order placed:", newOrder._id);
+    res.status(201).json({ msg: 'Order placed successfully', order: newOrder });
 
-    res.status(201).json({ msg: 'Order placed', order: newOrder });
   } catch (err) {
     console.error("❌ Error placing order:", err);
-    res.status(500).json({ msg: "Failed to place order" });
+    res.status(500).json({ msg: "Server error while placing order", error: err.message });
   }
 };
 
-
+// 👤 Get orders for logged-in user
 exports.getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate('items.product', 'name price image');
+
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to get orders' });
+    console.error("❌ Failed to get user's orders:", err);
+    res.status(500).json({ msg: 'Failed to fetch your orders', error: err.message });
   }
 };
 
-
+// 🛒 Get all recent orders (admin only)
 exports.getAllOrders = async (req, res) => {
   try {
     const last30Days = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -86,18 +82,18 @@ exports.getAllOrders = async (req, res) => {
     const orders = await Order.find({
       createdAt: { $gte: last30Days }
     })
-      .populate('user', 'name email')         // ✅ Get user name and email
-      .populate('items.product', 'name price') // ✅ Get product name and price
+      .populate('user', 'name email')
+      .populate('items.product', 'name price')
       .sort({ createdAt: -1 });
 
     res.json(orders);
   } catch (err) {
+    console.error("❌ Failed to fetch all orders:", err);
     res.status(500).json({ msg: 'Failed to fetch orders', error: err.message });
   }
 };
 
-// controllers/orderController.js
-
+// 🛑 User requests to cancel their order
 exports.requestOrderCancel = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -111,24 +107,28 @@ exports.requestOrderCancel = async (req, res) => {
     order.cancelRequest = true;
     await order.save();
 
-    res.json({ msg: "Cancellation requested" });
+    res.json({ msg: "Cancellation request sent" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    console.error("❌ Cancel request error:", err);
+    res.status(500).json({ msg: "Failed to request cancellation", error: err.message });
   }
 };
 
+// ✅ Admin approves cancellation
 exports.approveCancel = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-    if (!order || !order.cancelRequest) return res.status(404).json({ msg: "No cancel request" });
+    if (!order || !order.cancelRequest) {
+      return res.status(404).json({ msg: "No cancellation request found" });
+    }
 
     order.cancelApproved = true;
     order.status = "Cancelled";
     await order.save();
 
-    res.json({ msg: "Order cancelled by admin" });
+    res.json({ msg: "Order cancelled successfully by admin" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    console.error("❌ Cancel approval error:", err);
+    res.status(500).json({ msg: "Failed to approve cancellation", error: err.message });
   }
 };
-
