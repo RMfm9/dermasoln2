@@ -5,9 +5,10 @@ const { placeOrder, getMyOrders, getAllOrders, updateOrderStatus,
 const { protect, admin } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-router.post('/', protect, placeOrder);
-router.get('/my', protect, getMyOrders);
-router.get('/', protect, admin, getAllOrders);
+// Order routes
+router.post('/place', protect, placeOrder);                 // POST /api/orders/place
+router.get('/my', protect, getMyOrders);                    // GET /api/orders/my
+router.get('/all', protect, admin, getAllOrders);           // GET /api/orders/all
 router.put("/:id/cancel-request", protect, requestOrderCancel);
 router.put("/:id/cancel-approve", protect, admin, approveCancel);
 
